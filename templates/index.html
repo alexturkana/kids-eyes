@@ -765,9 +765,10 @@
       buildSuggestions(allVideos);
       applyAndRender();
       if (allVideos.length > 0) {
-        // Pick a random video to show initially (no autoplay)
-        var rand = allVideos[Math.floor(Math.random() * allVideos.length)];
-        setHeroVideo(rand.id, false);
+        // Default to the intro video; fall back to first video if not found
+        var defaultId = 'TYSfcBlXBeA';
+        var defaultVideo = videoMap[defaultId] || allVideos[0];
+        setHeroVideo(defaultVideo.id, false);
       }
     } catch (err) {
       document.getElementById('video-grid').innerHTML =
