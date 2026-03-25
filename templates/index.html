@@ -72,6 +72,70 @@
     .site-nav a:hover { background: var(--pink); }
     .site-nav a.active { background: var(--pink); font-weight: 600; }
 
+    /* ── Dropdown nav ── */
+    .nav-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .nav-dropdown-toggle {
+      margin-left: 6px;
+      display: inline-block;
+      cursor: pointer;
+      color: var(--dark);
+      font-weight: 500;
+      font-size: 0.95rem;
+      padding: 7px 14px;
+      border-radius: 7px;
+      transition: background 0.18s;
+      user-select: none;
+    }
+    .nav-dropdown-toggle:hover,
+    .nav-dropdown-toggle.active { background: var(--pink); font-weight: 600; }
+    .nav-dropdown-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.13);
+      min-width: 240px;
+      z-index: 200;
+      padding: 6px 0;
+      border: 1px solid #eee;
+    }
+    .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+    .nav-dropdown-menu a {
+      display: block;
+      margin: 0;
+      padding: 10px 18px;
+      border-radius: 0;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--dark);
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .nav-dropdown-menu a:hover { background: var(--light); }
+    .nav-dropdown-menu a.active { background: var(--pink); font-weight: 600; }
+    .nav-dropdown-menu a.coming-soon {
+      color: #aaa;
+      cursor: default;
+      font-style: italic;
+    }
+    .nav-dropdown-menu a.coming-soon:hover { background: none; }
+
+    /* ── Search section (above player) ── */
+    .search-section {
+      background: var(--white);
+      padding: 16px 24px 0;
+      border-bottom: none;
+    }
+    .search-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
     /* ── Hero ── */
     .hero {
       background: var(--white);
@@ -372,11 +436,34 @@
       <span class="logo-text">Kids Eyes</span>
     </a>
     <nav class="site-nav">
-      <a href="/" class="active">Video Library</a>
-      <a href="/contact">Contact</a>
+      <a href="/">Home</a>
+      <div class="nav-dropdown">
+        <span class="nav-dropdown-toggle active">Learn &#9660;</span>
+        <div class="nav-dropdown-menu">
+          <a href="/" class="active">Common Issues &amp; What to Do</a>
+          <a href="#" class="coming-soon">Helpful Tips &amp; Tricks <small>(coming soon)</small></a>
+          <a href="#" class="coming-soon">External Helpful Resources <small>(coming soon)</small></a>
+        </div>
+      </div>
+      <a href="/contact">Contact Us</a>
     </nav>
   </div>
 </header>
+
+<!-- ── Search (above player) ── -->
+<section class="search-section">
+  <div class="search-inner">
+    <div class="controls">
+      <input type="search" id="search" placeholder="Search by title or topic...">
+      <div class="sort-group">
+        <button class="sort-btn active" data-sort="date">Newest</button>
+        <button class="sort-btn" data-sort="title">A–Z</button>
+        <button class="sort-btn" data-sort="duration">Duration</button>
+        <button class="sort-btn" data-sort="views">Most Viewed</button>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- ── Hero Player ── -->
 <section class="hero">
@@ -393,19 +480,9 @@
   </div>
 </section>
 
-<!-- ── Video Library ── -->
+<!-- ── Video Grid ── -->
 <section class="library">
   <div class="library-inner">
-    <h2 class="library-heading">Video Library</h2>
-    <div class="controls">
-      <input type="search" id="search" placeholder="Search by title or topic...">
-      <div class="sort-group">
-        <button class="sort-btn active" data-sort="date">Newest</button>
-        <button class="sort-btn" data-sort="title">A–Z</button>
-        <button class="sort-btn" data-sort="duration">Duration</button>
-        <button class="sort-btn" data-sort="views">Most Viewed</button>
-      </div>
-    </div>
     <div class="video-grid" id="video-grid">
       <div class="state-msg">
         <div class="spinner"></div>
