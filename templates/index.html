@@ -448,7 +448,7 @@
     player = new YT.Player('yt-player', {
       height: '315',
       width: '560',
-      playerVars: { playsinline: 1 },
+      playerVars: { playsinline: 1, rel: 0 },
       events: {
         onReady: function () {
           playerReady = true;
