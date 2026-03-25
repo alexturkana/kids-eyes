@@ -150,6 +150,67 @@
     }
     .nav-dropdown-menu a.coming-soon:hover { background: none; }
 
+    /* ── Hamburger / mobile nav ── */
+    .menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px 8px;
+      border-radius: 6px;
+      transition: background 0.15s;
+      flex-shrink: 0;
+    }
+    .menu-btn:hover { background: rgba(255,255,255,0.12); }
+    .menu-btn span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: rgba(255,255,255,0.9);
+      margin: 5px 0;
+      border-radius: 2px;
+    }
+
+    .mobile-nav {
+      display: none;
+      flex-direction: column;
+      background: #1A3344;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .mobile-nav.open { display: flex; }
+    .mobile-nav > a {
+      padding: 14px 24px;
+      color: rgba(255,255,255,0.88);
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 500;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .mobile-nav > a:hover { background: rgba(255,255,255,0.07); color: #fff; }
+    .mobile-nav > a.active { color: var(--pink); font-weight: 600; }
+    .mobile-nav-label {
+      display: block;
+      padding: 12px 24px 4px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+    .mobile-nav-sub {
+      display: block;
+      padding: 10px 24px 10px 40px;
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      font-size: 0.92rem;
+      font-weight: 500;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .mobile-nav-sub:hover { background: rgba(255,255,255,0.07); color: #fff; }
+    .mobile-nav-sub.active { color: var(--pink); font-weight: 600; }
+    .mobile-nav-sub.coming-soon { color: rgba(255,255,255,0.3); font-style: italic; }
+    .mobile-nav-sub.coming-soon:hover { background: none; }
+
     /* ── Search section (above player) ── */
     .search-section {
       background: var(--white);
@@ -477,7 +538,11 @@
     }
     .top-bar-right { display: flex; gap: 16px; align-items: center; }
     @media (max-width: 600px) {
-      .top-bar { display: none; }
+      /* Top bar: compact — hide address + center text, keep phone + social */
+      .top-bar { display: block; padding: 5px 16px; }
+      .top-bar-inner { flex-wrap: nowrap; }
+      .top-bar-left > span { display: none; }
+      .top-bar-center { display: none; }
     }
 
     /* ── Footer ── */
@@ -511,10 +576,21 @@
       .video-info { padding: 0; }
     }
     @media (max-width: 600px) {
-      .logo-text { font-size: 1.15rem; }
-      .logo-sub { display: none; }
+      .logo-img { height: 42px; }
+      .logo-text { font-size: 1.1rem; }
+      .logo-sub { font-size: 0.62rem; }
+      /* Hamburger replaces desktop nav on mobile */
+      .site-nav { display: none; }
+      .menu-btn { display: flex; flex-direction: column; justify-content: center; }
       .controls { flex-direction: column; align-items: stretch; }
       .search-wrap { min-width: 0; width: 100%; }
+      /* 16px prevents iOS Safari from auto-zooming the page on input focus */
+      #search { font-size: 16px; }
+      /* Suggestions: drop below the search bar, full width */
+      .suggestions-dropdown { right: auto; left: 0; top: calc(100% + 4px); width: 100%; max-width: none; }
+      /* Sort buttons: horizontal scroll row, no wrapping */
+      .sort-group { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; padding-bottom: 2px; }
+      .sort-group::-webkit-scrollbar { display: none; }
       .footer-inner { flex-direction: column; text-align: center; }
     }
   </style>
@@ -559,7 +635,18 @@
       </div>
       <a href="/contact">Contact Us</a>
     </nav>
+    <button class="menu-btn" id="menu-btn" aria-label="Open navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </div>
+  <nav class="mobile-nav" id="mobile-nav">
+    <a href="/">Home</a>
+    <span class="mobile-nav-label">Learn</span>
+    <a href="/" class="mobile-nav-sub active">Common Issues &amp; What to Do</a>
+    <a href="#" class="mobile-nav-sub coming-soon">Helpful Tips &amp; Tricks <small>(coming soon)</small></a>
+    <a href="#" class="mobile-nav-sub coming-soon">External Helpful Resources <small>(coming soon)</small></a>
+    <a href="/contact">Contact Us</a>
+  </nav>
 </header>
 
 <!-- ── Search (above player) ── -->
@@ -893,6 +980,50 @@
     if (n >= 1000)    return (n / 1000).toFixed(1) + 'K';
     return n.toLocaleString();
   }
+
+  // ── Hamburger menu ───────────────────────────────────────────────────────────
+  (function () {
+    var menuBtn = document.getElementById('menu-btn');
+    var mobileNav = document.getElementById('mobile-nav');
+    if (!menuBtn || !mobileNav) return;
+
+    menuBtn.addEventListener('click', function (e) {
+      var isOpen = mobileNav.classList.contains('open');
+      mobileNav.classList.toggle('open');
+      menuBtn.setAttribute('aria-expanded', String(!isOpen));
+      e.stopPropagation();
+    });
+
+    // Close when any nav link is tapped
+    mobileNav.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', function () {
+        mobileNav.classList.remove('open');
+        menuBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    // Close when tapping outside
+    document.addEventListener('click', function (e) {
+      if (!mobileNav.contains(e.target) && e.target !== menuBtn) {
+        mobileNav.classList.remove('open');
+        menuBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }());
+
+  // ── Mobile nav dropdown (tap support — hover doesn't fire on touch) ─────────
+  document.querySelectorAll('.nav-dropdown-toggle').forEach(function (toggle) {
+    toggle.addEventListener('click', function (e) {
+      var menu = this.parentElement.querySelector('.nav-dropdown-menu');
+      var isOpen = menu.style.display === 'block';
+      document.querySelectorAll('.nav-dropdown-menu').forEach(function (m) { m.style.display = ''; });
+      if (!isOpen) { menu.style.display = 'block'; }
+      e.stopPropagation();
+    });
+  });
+  document.addEventListener('click', function () {
+    document.querySelectorAll('.nav-dropdown-menu').forEach(function (m) { m.style.display = ''; });
+  });
 
   // ── Boot ────────────────────────────────────────────────────────────────────
   loadVideos();
