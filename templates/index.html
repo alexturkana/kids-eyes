@@ -250,9 +250,13 @@
       align-items: center;
       margin-bottom: 22px;
     }
-    #search {
+    .search-wrap {
       flex: 1;
       min-width: 200px;
+      position: relative;
+    }
+    #search {
+      width: 100%;
       padding: 10px 16px;
       border: 2px solid #ddd;
       border-radius: 8px;
@@ -262,6 +266,29 @@
       background: var(--white);
     }
     #search:focus { border-color: var(--blue); }
+    .suggestions-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 2px);
+      left: 0;
+      right: 0;
+      background: rgba(255,255,255,0.96);
+      border: 1px solid #e0e0e0;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.09);
+      z-index: 50;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+    .suggestions-dropdown.visible { display: block; }
+    .suggestion-item {
+      padding: 9px 16px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: var(--dark);
+      transition: background 0.12s;
+    }
+    .suggestion-item:hover { background: var(--light); }
 
     .sort-group {
       display: flex;
@@ -465,7 +492,7 @@
       .logo-text { font-size: 1.15rem; }
       .logo-sub { display: none; }
       .controls { flex-direction: column; align-items: stretch; }
-      #search { min-width: 0; width: 100%; }
+      .search-wrap { min-width: 0; width: 100%; }
       .footer-inner { flex-direction: column; text-align: center; }
     }
   </style>
@@ -516,9 +543,10 @@
 <section class="search-section">
   <div class="search-inner">
     <div class="controls">
-      <input type="search" id="search" placeholder="Search by title or topic..."
-             list="search-suggestions" autocomplete="off">
-      <datalist id="search-suggestions"></datalist>
+      <div class="search-wrap">
+        <input type="search" id="search" placeholder="Search by title or topic..." autocomplete="off">
+        <div id="suggestions-dropdown" class="suggestions-dropdown"></div>
+      </div>
       <div class="sort-group">
         <button class="sort-btn active" data-sort="date">Newest</button>
         <button class="sort-btn" data-sort="title">A–Z</button>
@@ -737,6 +765,7 @@
   // Search — hide player while searching, show when cleared
   document.getElementById('search').addEventListener('input', function () {
     currentSearch = this.value.trim();
+    showSuggestions(currentSearch);
     applyAndRender();
     document.querySelector('.hero').style.display = currentSearch ? 'none' : '';
   });
@@ -773,6 +802,8 @@
     'kids','eyes','eye','dr','wilson','martin','pediatric','video'
   ]);
 
+  var allSuggestions = [];
+
   function buildSuggestions(videos) {
     var words = new Set();
     videos.forEach(function (v) {
@@ -783,11 +814,39 @@
         }
       });
     });
-    var datalist = document.getElementById('search-suggestions');
-    datalist.innerHTML = Array.from(words).sort().map(function (w) {
-      return '<option value="' + w + '">';
-    }).join('');
+    allSuggestions = Array.from(words).sort();
   }
+
+  function showSuggestions(query) {
+    var dropdown = document.getElementById('suggestions-dropdown');
+    if (!query) { dropdown.classList.remove('visible'); return; }
+    var q = query.toLowerCase();
+    var matches = allSuggestions.filter(function (w) {
+      return w.toLowerCase().startsWith(q);
+    }).slice(0, 10);
+    if (!matches.length) { dropdown.classList.remove('visible'); return; }
+    dropdown.innerHTML = matches.map(function (w) {
+      return '<div class="suggestion-item">' + esc(w) + '</div>';
+    }).join('');
+    dropdown.classList.add('visible');
+  }
+
+  document.getElementById('suggestions-dropdown').addEventListener('click', function (e) {
+    var item = e.target.closest('.suggestion-item');
+    if (!item) return;
+    var val = item.textContent;
+    document.getElementById('search').value = val;
+    currentSearch = val;
+    document.getElementById('suggestions-dropdown').classList.remove('visible');
+    applyAndRender();
+    document.querySelector('.hero').style.display = 'none';
+  });
+
+  document.getElementById('search').addEventListener('blur', function () {
+    setTimeout(function () {
+      document.getElementById('suggestions-dropdown').classList.remove('visible');
+    }, 150);
+  });
 
   // ── Helpers ─────────────────────────────────────────────────────────────────
   function esc(str) {
