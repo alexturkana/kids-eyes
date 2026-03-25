@@ -9,8 +9,8 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --pink:   #F4BDD7;
-      --blue:   #8DD3E0;
+      --pink:   #D91C7A;
+      --blue:   #5AABD4;
       --dark:   #2C3E50;
       --gray:   #666;
       --light:  #F7F9FB;
@@ -75,6 +75,15 @@
       color: var(--blue);
       font-weight: 500;
     }
+    .logo-tagline {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      margin-top: 3px;
+    }
+    .logo-tagline span { color: var(--pink); }
     .site-nav a {
       margin-left: 4px;
       text-decoration: none;
@@ -86,7 +95,7 @@
       transition: background 0.18s, color 0.18s;
     }
     .site-nav a:hover { background: rgba(255,255,255,0.12); color: #fff; }
-    .site-nav a.active { background: var(--pink); color: var(--dark); font-weight: 600; }
+    .site-nav a.active { background: var(--pink); color: #fff; font-weight: 600; }
 
     /* ── Dropdown nav ── */
     .nav-dropdown {
@@ -106,7 +115,7 @@
       user-select: none;
     }
     .nav-dropdown-toggle:hover { background: rgba(255,255,255,0.12); color: #fff; }
-    .nav-dropdown-toggle.active { background: var(--pink); color: var(--dark); font-weight: 600; }
+    .nav-dropdown-toggle.active { background: var(--pink); color: #fff; font-weight: 600; }
     .nav-dropdown-menu {
       display: none;
       position: absolute;
@@ -521,6 +530,7 @@
       <div class="logo-text-group">
         <span class="logo-sub">Pediatric Eye Physicians &amp; Surgeons</span>
         <span class="logo-sub doctor">Dr. Martin C. Wilson, M.D.</span>
+        <span class="logo-tagline"><span>EyeCare</span> &nbsp;|&nbsp; <span>EyeWear</span></span>
       </div>
     </a>
     <nav class="site-nav">
