@@ -11,9 +11,11 @@ app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
 
 YOUTUBE_API_KEY = os.environ.get('YOUTUBE_API_KEY', '')
-PLAYLIST_ID = 'PLBDSlK2N996kGTKjQb2021XKvM_FldaA1'
+CHANNEL_HANDLE = 'martinwilson3510'
 CACHE_FILE = 'videos_cache.json'
 CACHE_TTL = 3600  # 1 hour
+
+_uploads_playlist_id = None  # cached after first lookup
 
 _video_cache = []
 _cache_timestamp = 0
@@ -51,6 +53,24 @@ def best_thumbnail(thumbnails):
     return ''
 
 
+def get_uploads_playlist_id():
+    """Resolve channel handle → uploads playlist ID (cached in memory)."""
+    global _uploads_playlist_id
+    if _uploads_playlist_id:
+        return _uploads_playlist_id
+    yt = get_youtube_client()
+    resp = yt.channels().list(
+        part='contentDetails',
+        forHandle=CHANNEL_HANDLE
+    ).execute()
+    items = resp.get('items', [])
+    if not items:
+        raise ValueError(f'Channel @{CHANNEL_HANDLE} not found')
+    _uploads_playlist_id = items[0]['contentDetails']['relatedPlaylists']['uploads']
+    logging.info(f'Resolved uploads playlist: {_uploads_playlist_id}')
+    return _uploads_playlist_id
+
+
 def fetch_playlist_videos():
     if not YOUTUBE_API_KEY:
         logging.warning('No API key — serving from cache file')
@@ -58,14 +78,15 @@ def fetch_playlist_videos():
 
     try:
         yt = get_youtube_client()
+        playlist_id = get_uploads_playlist_id()
         video_ids = []
         page_token = None
 
-        # Collect all video IDs from playlist
+        # Collect all video IDs from channel uploads
         while True:
             resp = yt.playlistItems().list(
                 part='contentDetails',
-                playlistId=PLAYLIST_ID,
+                playlistId=playlist_id,
                 maxResults=50,
                 pageToken=page_token
             ).execute()
