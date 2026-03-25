@@ -664,6 +664,14 @@
     });
 
     if (play) {
+      // If player was hidden (due to search), show it and clear search
+      var hero = document.querySelector('.hero');
+      if (hero.style.display === 'none') {
+        hero.style.display = '';
+        document.getElementById('search').value = '';
+        currentSearch = '';
+        applyAndRender();
+      }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
@@ -723,10 +731,11 @@
     setHeroVideo(card.dataset.videoId, true);
   });
 
-  // Search
+  // Search — hide player while searching, show when cleared
   document.getElementById('search').addEventListener('input', function () {
     currentSearch = this.value.trim();
     applyAndRender();
+    document.querySelector('.hero').style.display = currentSearch ? 'none' : '';
   });
 
   // Sort buttons
