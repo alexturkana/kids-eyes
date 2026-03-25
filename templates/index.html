@@ -268,17 +268,15 @@
     #search:focus { border-color: var(--blue); }
     .suggestions-dropdown {
       display: none;
-      position: absolute;
-      top: calc(100% + 3px);
-      left: 0;
       min-width: 160px;
+      width: fit-content;
       background: #fff;
       border: 1px solid #d0d0d0;
       border-radius: 6px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      z-index: 50;
       max-height: 280px;
       overflow-y: auto;
+      margin-top: 6px;
     }
     .suggestions-dropdown.visible { display: block; }
     .suggestion-item {
@@ -546,7 +544,6 @@
     <div class="controls">
       <div class="search-wrap">
         <input type="search" id="search" placeholder="Search by title or topic..." autocomplete="off">
-        <div id="suggestions-dropdown" class="suggestions-dropdown"></div>
       </div>
       <div class="sort-group">
         <button class="sort-btn active" data-sort="date">Newest</button>
@@ -555,6 +552,7 @@
         <button class="sort-btn" data-sort="views">Most Viewed</button>
       </div>
     </div>
+    <div id="suggestions-dropdown" class="suggestions-dropdown"></div>
   </div>
 </section>
 
