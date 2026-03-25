@@ -516,7 +516,9 @@
 <section class="search-section">
   <div class="search-inner">
     <div class="controls">
-      <input type="search" id="search" placeholder="Search by title or topic...">
+      <input type="search" id="search" placeholder="Search by title or topic..."
+             list="search-suggestions" autocomplete="off">
+      <datalist id="search-suggestions"></datalist>
       <div class="sort-group">
         <button class="sort-btn active" data-sort="date">Newest</button>
         <button class="sort-btn" data-sort="title">A–Z</button>
@@ -622,6 +624,7 @@
       var res = await fetch('/api/videos');
       allVideos = await res.json();
       allVideos.forEach(function (v) { videoMap[v.id] = v; });
+      buildSuggestions(allVideos);
       applyAndRender();
       if (allVideos.length > 0) {
         // Pick a random video to show initially (no autoplay)
@@ -747,6 +750,44 @@
       applyAndRender();
     });
   });
+
+  // ── Search suggestions ──────────────────────────────────────────────────────
+  var STOP_WORDS = new Set([
+    'the','and','or','but','a','an','in','on','at','to','for','of','with',
+    'by','from','is','are','was','were','be','been','have','has','had',
+    'do','does','did','will','would','could','should','may','might','can',
+    'this','that','these','those','it','its','not','no','so','if','as',
+    'up','out','about','into','than','then','there','here','all','some',
+    'any','also','just','very','one','two','three','get','see','know',
+    'make','take','come','go','need','want','look','say','keep','put',
+    'right','left','both','after','before','other','even','first','last',
+    'long','well','good','high','low','next','over','back','only','more',
+    'most','much','many','each','such','when','where','what','which','who',
+    'how','why','your','our','their','his','her','my','his','him','her',
+    'they','them','we','you','he','she','i','me','us','every','same',
+    'like','than','through','while','during','without','between','however',
+    'because','since','though','although','new','use','used','using',
+    'able','little','own','small','large','old','few','another','give',
+    'being','going','having','taking','making','getting','coming','dont',
+    'cant','isnt','wont','wasnt','arent','doesnt','youre','theyre',
+    'kids','eyes','eye','dr','wilson','martin','pediatric','video'
+  ]);
+
+  function buildSuggestions(videos) {
+    var words = new Set();
+    videos.forEach(function (v) {
+      v.title.split(/[\s\-\/]+/).forEach(function (token) {
+        var word = token.replace(/[^a-zA-Z]/g, '').toLowerCase();
+        if (word.length >= 4 && !STOP_WORDS.has(word)) {
+          words.add(word.charAt(0).toUpperCase() + word.slice(1));
+        }
+      });
+    });
+    var datalist = document.getElementById('search-suggestions');
+    datalist.innerHTML = Array.from(words).sort().map(function (w) {
+      return '<option value="' + w + '">';
+    }).join('');
+  }
 
   // ── Helpers ─────────────────────────────────────────────────────────────────
   function esc(str) {
