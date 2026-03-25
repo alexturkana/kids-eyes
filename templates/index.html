@@ -453,6 +453,7 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 8px;
+      position: relative;
     }
     .top-bar a {
       color: rgba(255,255,255,0.65);
@@ -461,6 +462,15 @@
     }
     .top-bar a:hover { color: var(--pink); }
     .top-bar-left { display: flex; gap: 18px; align-items: center; }
+    .top-bar-center {
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.82rem;
+      letter-spacing: 0.15em;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
     .top-bar-right { display: flex; gap: 16px; align-items: center; }
     @media (max-width: 600px) {
       .top-bar { display: none; }
@@ -514,6 +524,7 @@
       <span>&#128205; 155 W Lancaster Ave, Paoli, PA 19301</span>
       <a href="tel:6109938083">&#128222; (610) 993-8083</a>
     </div>
+    <div class="top-bar-center">EYECARE &nbsp;|&nbsp; EYEWEAR</div>
     <div class="top-bar-right">
       <a href="https://www.youtube.com/@martinwilson3510" target="_blank" rel="noopener">&#9654; YouTube</a>
       <a href="https://www.instagram.com/kidseyesoptical/" target="_blank" rel="noopener">&#128247; Instagram</a>
@@ -530,7 +541,6 @@
       <div class="logo-text-group">
         <span class="logo-sub">Pediatric Eye Physicians &amp; Surgeons</span>
         <span class="logo-sub doctor">Dr. Martin C. Wilson, M.D.</span>
-        <span class="logo-tagline"><span>EyeCare</span> &nbsp;|&nbsp; <span>EyeWear</span></span>
       </div>
     </a>
     <nav class="site-nav">
