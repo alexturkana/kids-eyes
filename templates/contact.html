@@ -31,14 +31,14 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: var(--white);
+      background: #1E3A4A;
       border-bottom: 3px solid var(--pink);
-      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+      box-shadow: 0 2px 14px rgba(0,0,0,0.28);
     }
     .header-inner {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 10px 24px;
+      padding: 13px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -46,28 +46,43 @@
     .logo-link {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 14px;
       text-decoration: none;
     }
-    .logo-img { height: 46px; width: auto; }
+    .logo-img { height: 54px; width: auto; }
+    .logo-text-group {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
     .logo-text {
-      font-size: 1.45rem;
+      font-size: 1.5rem;
       font-weight: 800;
-      color: var(--dark);
+      color: #fff;
       letter-spacing: -0.5px;
+      line-height: 1.1;
+    }
+    .logo-sub {
+      font-size: 0.76rem;
+      color: rgba(255,255,255,0.68);
+      font-weight: 400;
+    }
+    .logo-sub.doctor {
+      color: var(--blue);
+      font-weight: 500;
     }
     .site-nav a {
-      margin-left: 6px;
+      margin-left: 4px;
       text-decoration: none;
-      color: var(--dark);
+      color: rgba(255,255,255,0.85);
       font-weight: 500;
       font-size: 0.95rem;
       padding: 7px 14px;
       border-radius: 7px;
-      transition: background 0.18s;
+      transition: background 0.18s, color 0.18s;
     }
-    .site-nav a:hover { background: var(--pink); }
-    .site-nav a.active { background: var(--pink); font-weight: 600; }
+    .site-nav a:hover { background: rgba(255,255,255,0.12); color: #fff; }
+    .site-nav a.active { background: var(--pink); color: var(--dark); font-weight: 600; }
 
     /* ── Page ── */
     .page {
@@ -271,6 +286,34 @@
       box-shadow: 0 5px 16px rgba(0,0,0,0.15);
     }
 
+    /* ── Top bar ── */
+    .top-bar {
+      background: #12252F;
+      color: rgba(255,255,255,0.65);
+      font-size: 0.8rem;
+      padding: 6px 24px;
+    }
+    .top-bar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .top-bar a {
+      color: rgba(255,255,255,0.65);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .top-bar a:hover { color: var(--pink); }
+    .top-bar-left { display: flex; gap: 18px; align-items: center; }
+    .top-bar-right { display: flex; gap: 16px; align-items: center; }
+    @media (max-width: 700px) {
+      .top-bar { display: none; }
+    }
+
     /* ── Footer ── */
     .site-footer {
       background: var(--dark);
@@ -295,12 +338,27 @@
     @media (max-width: 700px) {
       .contact-grid { grid-template-columns: 1fr; }
       .photos-grid  { grid-template-columns: 1fr; }
-      .logo-text { font-size: 1.2rem; }
+      .logo-text { font-size: 1.15rem; }
+      .logo-sub { display: none; }
       .footer-inner { flex-direction: column; text-align: center; }
     }
   </style>
 </head>
 <body>
+
+<!-- ── Top bar ── -->
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div class="top-bar-left">
+      <span>&#128205; 155 W Lancaster Ave, Paoli, PA 19301</span>
+      <a href="tel:6109938083">&#128222; (610) 993-8083</a>
+    </div>
+    <div class="top-bar-right">
+      <a href="https://www.youtube.com/@martinwilson3510" target="_blank" rel="noopener">&#9654; YouTube</a>
+      <a href="https://www.instagram.com/kidseyesoptical/" target="_blank" rel="noopener">&#128247; Instagram</a>
+    </div>
+  </div>
+</div>
 
 <!-- ── Header ── -->
 <header class="site-header">
@@ -308,11 +366,16 @@
     <a href="/" class="logo-link">
       <img src="/static/kids-eyes-logo.png" alt="Kids Eyes logo" class="logo-img"
            onerror="this.style.display='none'">
-      <span class="logo-text">Kids Eyes</span>
+      <div class="logo-text-group">
+        <span class="logo-text">Kids Eyes</span>
+        <span class="logo-sub">Pediatric Eye Physicians &amp; Surgeons</span>
+        <span class="logo-sub doctor">Dr. Martin C. Wilson, M.D.</span>
+      </div>
     </a>
     <nav class="site-nav">
-      <a href="/">Video Library</a>
-      <a href="/contact" class="active">Contact</a>
+      <a href="/">Home</a>
+      <a href="/">Learn</a>
+      <a href="/contact" class="active">Contact Us</a>
     </nav>
   </div>
 </header>
